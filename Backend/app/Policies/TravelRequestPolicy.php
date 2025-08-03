@@ -1,66 +1,90 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Policies;
 
 use App\Models\TravelRequest;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TravelRequestPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * View any travel requests
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        // Users can view their own requests, admins can view all
+        return true;
     }
 
     /**
-     * Determine whether the user can view the model.
+     * View specific travel request
      */
     public function view(User $user, TravelRequest $travelRequest): bool
     {
-        return false;
+        // Users can view their own requests, admins can view all
+        return $user->isAdmin() || $travelRequest->user_id === $user->id;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Create travel request
      */
     public function create(User $user): bool
     {
-        return false;
+        // All authenticated users can create travel requests
+        return true;
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Update travel request
      */
     public function update(User $user, TravelRequest $travelRequest): bool
     {
-        return false;
+        // Users can only update their own requests if status is 'requested'
+        return $travelRequest->user_id === $user->id && $travelRequest->status === 'requested';
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Delete travel request
      */
     public function delete(User $user, TravelRequest $travelRequest): bool
     {
-        return false;
+        // Users can only delete their own requests if status is 'requested'
+        return $travelRequest->user_id === $user->id && $travelRequest->status === 'requested';
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Cancel travel request after approval
+     */
+    public function cancel(User $user, TravelRequest $travelRequest): bool
+    {
+        // Users cannot cancel approved requests, only requested ones
+        return $travelRequest->user_id === $user->id && $travelRequest->status === 'requested';
+    }
+
+    /**
+     * Change status (approve/reject)
+     */
+    public function changeStatus(User $user, TravelRequest $travelRequest): bool
+    {
+        // Only admins can change status
+        return $user->isAdmin();
+    }
+
+    /**
+     * Restore travel request
      */
     public function restore(User $user, TravelRequest $travelRequest): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Force delete travel request
      */
     public function forceDelete(User $user, TravelRequest $travelRequest): bool
     {
-        return false;
+        return $user->isAdmin();
     }
 }

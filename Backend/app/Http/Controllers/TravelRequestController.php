@@ -1,66 +1,139 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreTravelRequestRequest;
-use App\Http\Requests\UpdateTravelRequestRequest;
+use App\Http\Requests\TravelRequest\CreateTravelRequestRequest;
+use App\Http\Requests\TravelRequest\UpdateStatusRequest;
+use App\Http\Requests\TravelRequest\UpdateTravelRequestRequest;
+use App\Http\Resources\TravelRequestCollection;
+use App\Http\Resources\TravelRequestResource;
 use App\Models\TravelRequest;
+use App\Services\TravelRequestService;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
+/**
+ * Travel Request Controller
+ */
 class TravelRequestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+    public function __construct(
+        private readonly TravelRequestService $travelRequestService
+    ) {
     }
 
     /**
-     * Show the form for creating a new resource.
+     * List travel requests
+     * @throws AuthorizationException
      */
-    public function create()
+    public function index(Request $request): TravelRequestCollection
     {
-        //
+        $this->authorize('viewAny', TravelRequest::class);
+
+        $travelRequests = $this->travelRequestService->getPaginatedRequests($request, $request->user());
+
+        return new TravelRequestCollection($travelRequests);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create travel request
      */
-    public function store(StoreTravelRequestRequest $request)
+    public function store(CreateTravelRequestRequest $request): JsonResponse
     {
-        //
+        $travelRequest = $this->travelRequestService->create(
+            $request->validated(),
+            $request->user()
+        );
+
+        return response()->json([
+            'data'    => new TravelRequestResource($travelRequest),
+            'message' => 'Travel request created successfully',
+        ], Response::HTTP_CREATED);
     }
 
     /**
-     * Display the specified resource.
+     * Show travel request
+     * @throws AuthorizationException
      */
-    public function show(TravelRequest $travelRequest)
+    public function show(TravelRequest $travelRequest): TravelRequestResource
     {
-        //
+        $this->authorize('view', $travelRequest);
+
+        $travelRequest->load('user');
+
+        return new TravelRequestResource($travelRequest);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update travel request
      */
-    public function edit(TravelRequest $travelRequest)
+    public function update(UpdateTravelRequestRequest $request, TravelRequest $travelRequest): TravelRequestResource
     {
-        //
+        $updatedTravelRequest = $this->travelRequestService->update(
+            $travelRequest,
+            $request->validated()
+        );
+
+        return new TravelRequestResource($updatedTravelRequest);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update travel request status
      */
-    public function update(UpdateTravelRequestRequest $request, TravelRequest $travelRequest)
+    public function updateStatus(UpdateStatusRequest $request, TravelRequest $travelRequest): JsonResponse
     {
-        //
+        $result = $this->travelRequestService->updateStatus($travelRequest, $request->status);
+
+        if (! $result['success']) {
+            return response()->json([
+                'message' => $result['message'],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response()->json([
+            'data'    => new TravelRequestResource($result['travelRequest']),
+            'message' => $result['message'],
+        ]);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Cancel travel request
+     * @throws AuthorizationException
      */
-    public function destroy(TravelRequest $travelRequest)
+    public function cancel(TravelRequest $travelRequest): JsonResponse
     {
-        //
+        $this->authorize('cancel', $travelRequest);
+
+        $result = $this->travelRequestService->cancel($travelRequest);
+
+        if (! $result['success']) {
+            return response()->json([
+                'message' => $result['message'],
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response()->json([
+            'data'    => new TravelRequestResource($result['travelRequest']),
+            'message' => $result['message'],
+        ]);
+    }
+
+    /**
+     * Delete travel request
+     * @throws AuthorizationException
+     */
+    public function destroy(TravelRequest $travelRequest): JsonResponse
+    {
+        $this->authorize('delete', $travelRequest);
+
+        $this->travelRequestService->delete($travelRequest);
+
+        return response()->json([
+            'message' => 'Travel request deleted successfully',
+        ]);
     }
 }
