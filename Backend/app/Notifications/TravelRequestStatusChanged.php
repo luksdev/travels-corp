@@ -42,7 +42,7 @@ class TravelRequestStatusChanged extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $statusText = $this->newStatus === 'approved' ? 'approved' : 'rejected';
+        $statusText = $this->newStatus === 'approved' ? 'approved' : 'cancelled';
         $subject    = "Travel Request {$statusText}";
 
         return (new MailMessage())

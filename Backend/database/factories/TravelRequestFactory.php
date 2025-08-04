@@ -43,7 +43,7 @@ class TravelRequestFactory extends Factory
             ]),
             'departure_date' => $departureDate->format('Y-m-d'),
             'return_date'    => $returnDate->format('Y-m-d'),
-            'status'         => $this->faker->randomElement(['requested', 'approved', 'rejected']),
+            'status'         => $this->faker->randomElement(['requested', 'approved', 'cancelled']),
         ];
     }
 
@@ -68,12 +68,12 @@ class TravelRequestFactory extends Factory
     }
 
     /**
-     * Rejected status state
+     * Cancelled status state
      */
-    public function rejected(): static
+    public function cancelled(): static
     {
         return $this->state(fn (array $attributes) => [
-            'status' => 'rejected',
+            'status' => 'cancelled',
         ]);
     }
 }

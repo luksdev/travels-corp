@@ -1,61 +1,360 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# OnHappy Travel Request Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Uma API REST desenvolvida em Laravel 12.x para gerenciamento de pedidos de viagem, com sistema de autenticação JWT, controle de permissões e notificações automáticas.
 
-## About Laravel
+[![Run with Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/your-collection-id)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Funcionalidades
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- ✅ **Autenticação JWT** - Registro, login, logout e refresh de tokens
+- ✅ **Gestão de Pedidos de Viagem** - CRUD completo com autorização
+- ✅ **Controle de Status** - Solicitado → Aprovado/Cancelado (apenas admins)
+- ✅ **Notificações Automáticas** - Email e database para mudanças de status
+- ✅ **Filtros Avançados** - Por status, destino, período de datas
+- ✅ **Isolamento de Dados** - Usuários veem apenas seus próprios pedidos
+- ✅ **Testes Automatizados** - Cobertura completa Feature e Unit tests
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tecnologias
 
-## Learning Laravel
+- **Laravel 12.x** com PHP 8.2
+- **JWT Authentication** (`tymon/jwt-auth`)
+- **SQLite** para desenvolvimento e testes
+- **Laravel Pint** para code style (PSR-12)
+- **PHPUnit** para testes automatizados
+- **Vite** para build de assets
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Instalação e Configuração
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Pré-requisitos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2+
+- Composer
+- Node.js e npm
 
-## Laravel Sponsors
+### Setup do Projeto
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Clone o repositório
+git clone <repository-url>
+cd Backend
 
-### Premium Partners
+# Instale dependências PHP
+composer install
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Instale dependências Node.js
+npm install
 
-## Contributing
+# Configure ambiente
+cp .env.example .env
+php artisan key:generate
+php artisan jwt:secret
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Configure database (SQLite)
+touch database/database.sqlite
 
-## Code of Conduct
+# Execute migrações e seeders
+php artisan migrate --seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Build assets
+npm run build
+```
 
-## Security Vulnerabilities
+### Configuração do JWT
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+O JWT já está configurado automaticamente. Para personalizar:
 
-## License
+```bash
+# Publique a configuração (opcional)
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Executando o Projeto
+
+### Ambiente de Desenvolvimento Completo
+
+```bash
+# Inicia servidor, queue, logs e vite simultaneamente
+composer run dev
+```
+
+### Comandos Individuais
+
+```bash
+# Servidor Laravel
+php artisan serve
+
+# Queue worker (para notificações)
+php artisan queue:work
+
+# Watch de assets
+npm run dev
+
+# Logs em tempo real
+php artisan pail
+```
+
+## API Endpoints
+
+### Autenticação
+
+```http
+POST /api/auth/register    # Registro de usuário
+POST /api/auth/login       # Login
+POST /api/auth/logout      # Logout
+POST /api/auth/refresh     # Refresh token
+GET  /api/auth/user        # Dados do usuário autenticado
+```
+
+### Pedidos de Viagem
+
+```http
+GET    /api/travel-requests                           # Listar pedidos
+POST   /api/travel-requests                           # Criar pedido
+GET    /api/travel-requests/{id}                      # Ver pedido específico
+PUT    /api/travel-requests/{id}                      # Atualizar pedido
+DELETE /api/travel-requests/{id}                      # Deletar pedido
+PATCH  /api/travel-requests/{id}/status               # Atualizar status (admin)
+PATCH  /api/travel-requests/{id}/cancel               # Cancelar pedido
+```
+
+### Filtros de Listagem
+
+```http
+GET /api/travel-requests?status=approved
+GET /api/travel-requests?destination=tokyo
+GET /api/travel-requests?departure_from=2025-12-01&departure_to=2025-12-31
+GET /api/travel-requests?created_from=2025-01-01&created_to=2025-01-31
+```
+
+### Estrutura de Dados
+
+#### Travel Request
+```json
+{
+  "id": "uuid",
+  "destination": "Tokyo, Japan",
+  "departure_date": "2025-12-01",
+  "return_date": "2025-12-15",
+  "status": "requested|approved|cancelled",
+  "user": {
+    "id": "uuid",
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "created_at": "2025-08-03T10:00:00Z",
+  "updated_at": "2025-08-03T10:00:00Z"
+}
+```
+
+#### User Registration
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password",
+  "password_confirmation": "password"
+}
+```
+
+## Regras de Negócio
+
+### Permissões
+
+- **Usuários regulares**: Podem criar, ver, editar e deletar apenas seus próprios pedidos
+- **Administradores**: Podem ver todos os pedidos e alterar status
+
+### Status de Pedidos
+
+- **requested**: Status inicial ao criar pedido
+- **approved**: Apenas admins podem aprovar
+- **cancelled**: Usuários podem cancelar apenas pedidos "requested"
+
+### Notificações
+
+- Enviadas automaticamente por email e salvas no banco
+- Disparadas quando status muda (aprovação/cancelamento)
+- Processadas em background via queue
+
+## Testes
+
+### Executar Todos os Testes
+
+```bash
+composer test
+# ou
+php artisan test
+```
+
+### Testes Específicos
+
+```bash
+# Testes de funcionalidades
+php artisan test tests/Feature/
+
+# Testes unitários
+php artisan test tests/Unit/
+
+# Teste específico
+php artisan test --filter=TravelRequestTest
+
+# Com cobertura (se configurado)
+php artisan test --coverage
+```
+
+### Estrutura de Testes
+
+- **Feature Tests**: Testes de API endpoints e fluxos completos
+- **Unit Tests**: Testes de services, policies e notifications
+- **Factories**: Geração de dados de teste
+- **Database**: Testes usam banco em memória
+
+## Code Quality
+
+### Formatação de Código
+
+```bash
+# Aplicar Laravel Pint (PSR-12 + regras customizadas)
+./vendor/bin/pint
+
+# Verificar sem aplicar correções
+./vendor/bin/pint --test
+
+# Formatar pasta específica
+./vendor/bin/pint app/Http/Controllers/
+```
+
+### Regras de Code Style
+
+- **PSR-12** compliance
+- **Strict types** obrigatório
+- **Readonly properties** quando aplicável
+- **PHP 8.2+** features
+- Documentação PHPDoc completa
+
+## Arquitetura
+
+### Estrutura de Pastas
+
+```
+app/
+├── Http/
+│   ├── Controllers/     # Controllers com Route Model Binding
+│   ├── Requests/        # Form Request Validation
+│   └── Resources/       # API Resources para respostas
+├── Models/              # Eloquent Models com UUIDs
+├── Services/            # Lógica de negócio
+├── Policies/            # Autorização
+├── Notifications/       # Notificações por email/database
+└── Enums/              # Enums para tipos (Status, Roles)
+```
+
+### Padrões Implementados
+
+- **Service Layer**: Lógica de negócio separada dos controllers
+- **Policy Authorization**: Controle granular de permissões
+- **API Resources**: Transformação consistente de respostas
+- **Form Requests**: Validação centralizada
+- **Route Model Binding**: Injeção automática de models
+- **Queue Jobs**: Processamento assíncrono de notificações
+
+## Banco de Dados
+
+### Migrations
+
+```bash
+# Executar migrações
+php artisan migrate
+
+# Rollback última migração
+php artisan migrate:rollback
+
+# Reset completo com seeders
+php artisan migrate:fresh --seed
+```
+
+### Seeders
+
+```bash
+# Executar seeders
+php artisan db:seed
+
+# Seeder específico
+php artisan db:seed --class=TravelRequestSeeder
+```
+
+## Monitoramento e Logs
+
+### Logs de Aplicação
+
+```bash
+# Visualizar logs em tempo real
+php artisan pail
+
+# Logs por nível
+php artisan pail --filter="level:error"
+```
+
+### Queue Monitoring
+
+```bash
+# Processar jobs da queue
+php artisan queue:work
+
+# Com limite de tentativas
+php artisan queue:work --tries=3
+
+# Para desenvolvimento
+php artisan queue:listen --tries=1
+```
+
+## Deployment
+
+### Produção
+
+```bash
+# Otimizações de produção
+composer install --no-dev --optimize-autoloader
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+npm run build
+```
+
+### Variáveis de Ambiente Importantes
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+JWT_SECRET=your-jwt-secret
+DB_CONNECTION=sqlite
+QUEUE_CONNECTION=database
+MAIL_MAILER=smtp
+```
+
+## Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/amazing-feature`)
+3. Commit suas mudanças (`git commit -m 'Add amazing feature'`)
+4. Push para a branch (`git push origin feature/amazing-feature`)
+5. Abra um Pull Request
+
+### Code Standards
+
+- Siga PSR-12 e execute `./vendor/bin/pint` antes do commit
+- Escreva testes para novas funcionalidades
+- Mantenha cobertura de testes alta
+- Use strict types e PHP 8.2+ features
+
+## Licença
+
+Este projeto está licenciado sob a [MIT License](https://opensource.org/licenses/MIT).
+
+## Suporte
+
+Para dúvidas ou problemas:
+
+1. Verifique a documentação
+2. Execute os testes: `composer test`
+3. Verifique os logs: `php artisan pail`
+4. Abra uma issue no repositório

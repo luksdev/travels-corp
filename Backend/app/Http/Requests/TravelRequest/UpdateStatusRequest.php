@@ -31,7 +31,7 @@ class UpdateStatusRequest extends FormRequest
             'status' => [
                 'required',
                 'string',
-                Rule::in(['approved', 'rejected']),
+                Rule::in(['approved', 'cancelled']),
             ],
         ];
     }
@@ -44,7 +44,7 @@ class UpdateStatusRequest extends FormRequest
         return [
             'status.required' => 'The status field is required.',
             'status.string'   => 'The status must be a string.',
-            'status.in'       => 'The status must be either approved or rejected.',
+            'status.in'       => 'The status must be either approved or cancelled.',
         ];
     }
 }

@@ -23,12 +23,10 @@ class TravelRequestService
     {
         $query = TravelRequest::with('user');
 
-        // Filter by user (non-admins can only see their own requests)
         if (! $user->isAdmin()) {
             $query->where('user_id', $user->id);
         }
 
-        // Apply filters
         $this->applyFilters($query, $request);
 
         return $query->orderBy('created_at', 'desc');
@@ -112,7 +110,6 @@ class TravelRequestService
         $oldStatus = $travelRequest->status;
         $travelRequest->update(['status' => $newStatus]);
 
-        // Send notification to user
         $this->sendStatusChangeNotification($travelRequest, $oldStatus, $newStatus);
 
         return [
@@ -135,10 +132,9 @@ class TravelRequestService
         }
 
         $oldStatus = $travelRequest->status;
-        $travelRequest->update(['status' => 'rejected']);
+        $travelRequest->update(['status' => 'cancelled']);
 
-        // Send notification to user
-        $this->sendStatusChangeNotification($travelRequest, $oldStatus, 'rejected');
+        $this->sendStatusChangeNotification($travelRequest, $oldStatus, 'cancelled');
 
         return [
             'success'       => true,
@@ -176,20 +172,5 @@ class TravelRequestService
     public function getPaginatedRequests(Request $request, User $user, int $perPage = 15): LengthAwarePaginator
     {
         return $this->getFilteredQuery($request, $user)->paginate($perPage);
-    }
-
-    /**
-     * Check if user can perform action on travel request
-     */
-    public function canUserPerformAction(User $user, TravelRequest $travelRequest, string $action): bool
-    {
-        return match ($action) {
-            'view'         => $user->can('view', $travelRequest),
-            'update'       => $user->can('update', $travelRequest),
-            'delete'       => $user->can('delete', $travelRequest),
-            'cancel'       => $user->can('cancel', $travelRequest),
-            'changeStatus' => $user->can('changeStatus', $travelRequest),
-            default        => false,
-        };
     }
 }

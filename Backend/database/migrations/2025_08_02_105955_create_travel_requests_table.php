@@ -19,7 +19,7 @@ return new class () extends Migration
             $table->string('destination');
             $table->date('departure_date');
             $table->date('return_date')->nullable();
-            $table->enum('status', ['requested', 'approved', 'rejected'])->default('requested');
+            $table->enum('status', ['requested', 'approved', 'cancelled'])->default('requested');
             $table->timestamps();
             $table->softDeletes();
 
