@@ -10,7 +10,7 @@
         <Dialog v-model:open="isCreateDialogOpen">
           <DialogTrigger as-child v-if="!isAdmin">
             <Button>
-              <Plus class="w-4 h-4 mr-2" />
+              <Plus class="w-4 h-4 mr-2"/>
               Nova Solicitação
             </Button>
           </DialogTrigger>
@@ -21,46 +21,47 @@
                 Preencha os dados para criar uma nova solicitação de viagem.
               </DialogDescription>
             </DialogHeader>
-            
+
             <form @submit.prevent="handleCreateSubmit" class="space-y-4">
               <div class="space-y-2">
                 <label class="text-sm font-medium">Destino</label>
                 <Input
-                  v-model="createForm.destination"
-                  placeholder="Ex: São Paulo, SP"
-                  required
+                    v-model="createForm.destination"
+                    placeholder="Ex: São Paulo, SP"
+                    required
+                    class="!h-12"
                 />
               </div>
-              
+
               <div class="space-y-2">
                 <label class="text-sm font-medium">Data de Partida</label>
                 <DatePicker
-                  v-model="createForm.departure_date"
-                  placeholder="Selecione a data de partida"
-                  :min-date="new Date()"
+                    v-model="createForm.departure_date"
+                    placeholder="Selecione a data de partida"
+                    :min-date="new Date()"
                 />
               </div>
-              
+
               <div class="space-y-2">
                 <label class="text-sm font-medium">Data de Retorno</label>
                 <DatePicker
-                  v-model="createForm.return_date"
-                  placeholder="Selecione a data de retorno"
-                  :min-date="createForm.departure_date || undefined"
+                    v-model="createForm.return_date"
+                    placeholder="Selecione a data de retorno"
+                    :min-date="createForm.departure_date || undefined"
                 />
               </div>
-              
+
               <DialogFooter>
                 <Button
-                  type="button"
-                  variant="outline"
-                  @click="resetCreateForm"
+                    type="button"
+                    variant="outline"
+                    @click="resetCreateForm"
                 >
                   Cancelar
                 </Button>
                 <Button
-                  type="submit"
-                  :disabled="!isCreateFormValid || isLoading"
+                    type="submit"
+                    :disabled="!isCreateFormValid || isLoading"
                 >
                   <span v-if="isLoading">Criando...</span>
                   <span v-else>Criar Solicitação</span>
@@ -74,11 +75,11 @@
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div v-if="isLoading" v-for="i in 4" :key="i" class="border rounded-lg p-4">
-          <Skeleton class="h-4 w-20 mb-2" />
-          <Skeleton class="h-8 w-12 mb-1" />
-          <Skeleton class="h-3 w-24" />
+          <Skeleton class="h-4 w-20 mb-2"/>
+          <Skeleton class="h-8 w-12 mb-1"/>
+          <Skeleton class="h-3 w-24"/>
         </div>
-        
+
         <div v-else class="border rounded-lg p-4">
           <p class="text-sm text-gray-600 mb-1">Total</p>
           <p class="text-2xl font-semibold">{{ stats.total }}</p>
@@ -110,12 +111,12 @@
           <h3 class="text-lg font-medium">Filtros</h3>
           <p class="text-sm text-gray-600">Filtre as solicitações de viagem</p>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div class="space-y-2">
             <Select v-model="filters.status">
               <SelectTrigger class="w-full">
-                <SelectValue placeholder="Todos os status" />
+                <SelectValue placeholder="Todos os status"/>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos</SelectItem>
@@ -127,36 +128,36 @@
           </div>
 
           <div class="space-y-2">
-            <FormInput
-              name="destination"
-              label="Digite o Destino"
-              v-model="filters.destination"
+            <Input
+                v-model="filters.destination"
+                placeholder="Digite o destino"
+                class="h-11"
             />
           </div>
 
           <div class="space-y-2">
             <DatePicker
-              v-model="departureFromDate"
-              placeholder="Data inicial"
+                v-model="departureFromDate"
+                placeholder="Data inicial"
             />
           </div>
 
           <div class="space-y-2">
             <DatePicker
-              v-model="departureToDate"
-              placeholder="Data final"
-              :min-date="departureFromDate || undefined"
+                v-model="departureToDate"
+                placeholder="Data final"
+                :min-date="departureFromDate || undefined"
             />
           </div>
         </div>
 
         <div class="flex gap-2 mt-4">
           <Button @click="applyFilters" :disabled="isLoading" class="h-9">
-            <Search class="w-4 h-4 mr-2" />
+            <Search class="w-4 h-4 mr-2"/>
             Filtrar
           </Button>
           <Button class="h-9" variant="outline" @click="clearFilters" :disabled="isLoading">
-            <X class="w-4 h-4 mr-2" />
+            <X class="w-4 h-4 mr-2"/>
             Limpar
           </Button>
         </div>
@@ -168,7 +169,7 @@
           <h3 class="text-lg font-medium">Solicitações de Viagem</h3>
           <p class="text-sm text-gray-600 mt-1">{{ totalItems }} solicitações encontradas</p>
         </div>
-        
+
         <div class="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -187,17 +188,27 @@
               <TableRow v-if="isLoading" v-for="i in 5" :key="i">
                 <TableCell>
                   <div>
-                    <Skeleton class="h-4 w-24 mb-1" />
-                    <Skeleton class="h-3 w-32" />
+                    <Skeleton class="h-4 w-24 mb-1"/>
+                    <Skeleton class="h-3 w-32"/>
                   </div>
                 </TableCell>
-                <TableCell><Skeleton class="h-4 w-20" /></TableCell>
-                <TableCell><Skeleton class="h-4 w-16" /></TableCell>
-                <TableCell><Skeleton class="h-4 w-16" /></TableCell>
-                <TableCell><Skeleton class="h-5 w-16 rounded-full" /></TableCell>
-                <TableCell><Skeleton class="h-4 w-16" /></TableCell>
+                <TableCell>
+                  <Skeleton class="h-4 w-20"/>
+                </TableCell>
+                <TableCell>
+                  <Skeleton class="h-4 w-16"/>
+                </TableCell>
+                <TableCell>
+                  <Skeleton class="h-4 w-16"/>
+                </TableCell>
+                <TableCell>
+                  <Skeleton class="h-5 w-16 rounded-full"/>
+                </TableCell>
+                <TableCell>
+                  <Skeleton class="h-4 w-16"/>
+                </TableCell>
                 <TableCell class="text-right">
-                  <Skeleton class="h-8 w-8 rounded ml-auto" />
+                  <Skeleton class="h-8 w-8 rounded ml-auto"/>
                 </TableCell>
               </TableRow>
 
@@ -234,29 +245,29 @@
                   <div class="flex items-center justify-end gap-1">
                     <!-- Admin Actions -->
                     <template v-if="isAdmin && request.status === 'requested'">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        @click="handleApprove(request.id)"
-                        class="text-green-600 hover:text-green-700 hover:bg-green-50"
-                        title="Aprovar solicitação"
+                      <Button
+                          variant="ghost"
+                          size="sm"
+                          @click="handleApprove(request.id)"
+                          class="text-green-600 hover:text-green-700 hover:bg-green-50"
+                          title="Aprovar solicitação"
                       >
-                        <Check class="w-4 h-4" />
+                        <Check class="w-4 h-4"/>
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        @click="handleReject(request.id)"
-                        class="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        title="Rejeitar solicitação"
+                      <Button
+                          variant="ghost"
+                          size="sm"
+                          @click="handleReject(request.id)"
+                          class="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          title="Rejeitar solicitação"
                       >
-                        <Ban class="w-4 h-4" />
+                        <Ban class="w-4 h-4"/>
                       </Button>
                     </template>
-                    
+
                     <!-- View Button -->
                     <Button variant="ghost" size="sm" @click="viewRequest(request.id)" title="Ver detalhes">
-                      <Eye class="w-4 h-4" />
+                      <Eye class="w-4 h-4"/>
                     </Button>
                   </div>
                 </TableCell>
@@ -271,33 +282,33 @@
             Página {{ currentPage }} de {{ totalPages }} ({{ totalItems }} total)
           </div>
           <div class="flex gap-1">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              :disabled="currentPage <= 1 || isLoading"
-              @click="goToPage(currentPage - 1)"
-            >
-              <ChevronLeft class="w-4 h-4" />
-            </Button>
-            
             <Button
-              v-for="page in getPaginationPages"
-              :key="page"
-              :variant="page === currentPage ? 'default' : 'outline'"
-              size="sm"
-              :disabled="isLoading"
-              @click="goToPage(page)"
+                variant="outline"
+                size="sm"
+                :disabled="currentPage <= 1 || isLoading"
+                @click="goToPage(currentPage - 1)"
+            >
+              <ChevronLeft class="w-4 h-4"/>
+            </Button>
+
+            <Button
+                v-for="page in getPaginationPages"
+                :key="page"
+                :variant="page === currentPage ? 'default' : 'outline'"
+                size="sm"
+                :disabled="isLoading"
+                @click="goToPage(page)"
             >
               {{ page }}
             </Button>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              :disabled="currentPage >= totalPages || isLoading"
-              @click="goToPage(currentPage + 1)"
+            <Button
+                variant="outline"
+                size="sm"
+                :disabled="currentPage >= totalPages || isLoading"
+                @click="goToPage(currentPage + 1)"
             >
-              <ChevronRight class="w-4 h-4" />
+              <ChevronRight class="w-4 h-4"/>
             </Button>
           </div>
         </div>
@@ -307,24 +318,31 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import {computed, onMounted, ref} from 'vue'
+import {useRouter} from 'vue-router'
 import AppLayout from '@/components/AppLayout.vue'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { DatePicker } from '@/components/ui/date-picker'
-import { Skeleton } from '@/components/ui/skeleton'
-import { Search, X, Eye, ChevronLeft, ChevronRight, Plus, Check, Ban } from 'lucide-vue-next'
-import { useTravelRequests } from '@/composables/useTravelRequests'
-import { useAuth } from '@/composables/useAuth'
-import {FormInput} from "@/components/ui/form";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table'
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select'
+import {Input} from '@/components/ui/input'
+import {Button} from '@/components/ui/button'
+import {Badge} from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import {DatePicker} from '@/components/ui/date-picker'
+import {Skeleton} from '@/components/ui/skeleton'
+import {Search, X, Eye, ChevronLeft, ChevronRight, Plus, Check, Ban} from 'lucide-vue-next'
+import {useTravelRequests} from '@/composables/useTravelRequests'
+import {useAuth} from '@/composables/useAuth'
 
 const router = useRouter()
-const { isAdmin } = useAuth()
+const {isAdmin} = useAuth()
 
 const {
   travelRequests,
@@ -357,8 +375,8 @@ const createForm = ref({
 
 const isCreateFormValid = computed(() => {
   return createForm.value.destination.trim() !== '' &&
-         createForm.value.departure_date !== null &&
-         createForm.value.return_date !== null
+      createForm.value.departure_date !== null &&
+      createForm.value.return_date !== null
 })
 
 const resetCreateForm = () => {
@@ -372,7 +390,7 @@ const resetCreateForm = () => {
 
 const handleCreateSubmit = async () => {
   if (!isCreateFormValid.value) return
-  
+
   try {
     await createTravelRequest({
       destination: createForm.value.destination,
@@ -388,11 +406,11 @@ const getPaginationPages = computed(() => {
   const pages = []
   const start = Math.max(1, currentPage.value - 2)
   const end = Math.min(totalPages.value, currentPage.value + 2)
-  
+
   for (let i = start; i <= end; i++) {
     pages.push(i)
   }
-  
+
   return pages
 })
 

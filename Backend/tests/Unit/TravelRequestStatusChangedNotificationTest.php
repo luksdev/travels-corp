@@ -26,7 +26,7 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
 
         $channels = $notification->via($user);
 
-        $this->assertEquals(['database', 'mail'], $channels);
+        $this->assertEquals(['mail'], $channels);
     }
 
     /**

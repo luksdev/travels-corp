@@ -10,24 +10,18 @@ wait_for_db() {
     echo "Database is ready!"
 }
 
-if [ ! -f /var/www/.initialized ]; then
-    echo "First time setup - initializing Laravel..."
+echo "First time setup - initializing Laravel..."
 
-    wait_for_db
+wait_for_db
 
-    php artisan key:generate --force
+php artisan key:generate --force
 
-    php artisan jwt:secret --force
+php artisan jwt:secret --force
 
-    echo "Running migrations..."
-    php artisan migrate --force
+echo "Running migrations..."
+php artisan migrate --force
 
-    php artisan db:seed --force
-
-    touch /var/www/.initialized
-else
-    echo "Container already initialized, skipping setup..."
-fi
+touch /var/www/.initialized
 
 echo "Clearing Laravel cache..."
 php artisan optimize:clear
