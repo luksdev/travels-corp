@@ -18,7 +18,6 @@ const props = withDefaults(defineProps<Props>(), {
   type: "text"
 })
 
-// VeeValidate field
 const { value, errorMessage, handleChange, handleBlur } = useField(() => props.name)
 
 const showPassword = ref(false)

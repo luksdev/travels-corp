@@ -348,7 +348,6 @@ const {
   formatDate
 } = useTravelRequests()
 
-// Create dialog state
 const isCreateDialogOpen = ref(false)
 const createForm = ref({
   destination: '',
@@ -382,7 +381,6 @@ const handleCreateSubmit = async () => {
     })
     resetCreateForm()
   } catch (error) {
-    // Error is handled in the composable
   }
 }
 

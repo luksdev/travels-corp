@@ -4,9 +4,6 @@ import type { LoginData, RegisterData, AuthResponse, User, ApiResponse } from '.
 export const authService = {
   async login(data: LoginData): Promise<AuthResponse> {
     const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', data)
-
-    console.log(response);
-
     return response.data.data
   },
 

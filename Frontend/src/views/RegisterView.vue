@@ -82,7 +82,6 @@ const auth = useAuth()
 const { register, clearError } = auth
 const isLoading = computed(() => auth.isLoading)
 
-// VeeValidate form with Zod schema
 const { handleSubmit, values, meta } = useForm<RegisterForm>({
   validationSchema: toTypedSchema(registerSchema),
   initialValues: {

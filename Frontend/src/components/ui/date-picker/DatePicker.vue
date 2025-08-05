@@ -55,7 +55,6 @@ const df = new DateFormatter("pt-BR", {
 
 const value = ref<DateValue>()
 
-// Convert Date to DateValue
 const dateToDateValue = (date: Date | null): DateValue | undefined => {
   if (!date) return undefined
   const year = date.getFullYear()
@@ -64,13 +63,11 @@ const dateToDateValue = (date: Date | null): DateValue | undefined => {
   return new CalendarDate(year, month, day)
 }
 
-// Convert DateValue to Date
 const dateValueToDate = (dateValue: DateValue | undefined): Date | null => {
   if (!dateValue) return null
   return dateValue.toDate(getLocalTimeZone())
 }
 
-// Watch for external changes
 watch(() => props.modelValue, (newValue) => {
   value.value = dateToDateValue(newValue || null)
 }, { immediate: true })

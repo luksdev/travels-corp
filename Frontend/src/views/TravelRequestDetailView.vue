@@ -161,6 +161,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
+import moment from 'moment'
+
+moment.locale('pt-br')
 import AppLayout from '@/components/AppLayout.vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -176,10 +179,7 @@ const error = ref<string | null>(null)
 
 const getTripDuration = computed(() => {
   if (!travelRequest.value) return 0
-  const departure = new Date(travelRequest.value.departure_date)
-  const returnDate = new Date(travelRequest.value.return_date)
-  const diffTime = Math.abs(returnDate.getTime() - departure.getTime())
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return moment(travelRequest.value.return_date).diff(moment(travelRequest.value.departure_date), 'days')
 })
 
 const fetchTravelRequest = async () => {
@@ -227,11 +227,11 @@ const getStatusLabel = (status: string) => {
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('pt-BR')
+  return moment(dateString).format('DD/MM/YYYY')
 }
 
 const formatDateTime = (dateString: string) => {
-  return new Date(dateString).toLocaleString('pt-BR')
+  return moment(dateString).format('DD/MM/YYYY HH:mm')
 }
 
 const getUserInitials = (name: string) => {
@@ -244,21 +244,7 @@ const getUserInitials = (name: string) => {
 }
 
 const getTimeAgo = (dateString: string) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-  
-  if (diffDays === 0) return 'Hoje'
-  if (diffDays === 1) return '1 dia'
-  if (diffDays < 30) return `${diffDays} dias`
-  
-  const diffMonths = Math.floor(diffDays / 30)
-  if (diffMonths === 1) return '1 mês'
-  if (diffMonths < 12) return `${diffMonths} meses`
-  
-  const diffYears = Math.floor(diffMonths / 12)
-  return diffYears === 1 ? '1 ano' : `${diffYears} anos`
+  return moment(dateString).fromNow()
 }
 
 onMounted(() => {

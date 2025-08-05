@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { toast } from 'vue-sonner'
+import moment from 'moment'
 import { travelRequestService } from '@/services/travelRequest'
 import type { TravelRequest, TravelRequestFilters } from '@/types/travelRequest'
 
@@ -34,17 +35,8 @@ export function useTravelRequests() {
       isLoading.value = true
       error.value = null
       
-      if (departureFromDate.value) {
-        filters.value.departure_from = departureFromDate.value.toISOString().split('T')[0]
-      } else {
-        filters.value.departure_from = ''
-      }
-      
-      if (departureToDate.value) {
-        filters.value.departure_to = departureToDate.value.toISOString().split('T')[0]
-      } else {
-        filters.value.departure_to = ''
-      }
+      filters.value.departure_from = departureFromDate.value ? moment(departureFromDate.value).format('YYYY-MM-DD') : ''
+      filters.value.departure_to = departureToDate.value ? moment(departureToDate.value).format('YYYY-MM-DD') : ''
 
       const cleanFilters = Object.fromEntries(
         Object.entries({
@@ -56,7 +48,6 @@ export function useTravelRequests() {
         })
       )
       
-      console.log('Applying filters:', cleanFilters) // Debug log
       
       const response = await travelRequestService.getAll(cleanFilters)
       
@@ -113,8 +104,8 @@ export function useTravelRequests() {
 
       const formattedData = {
         destination: data.destination,
-        departure_date: data.departure_date.toISOString().split('T')[0],
-        return_date: data.return_date.toISOString().split('T')[0]
+        departure_date: moment(data.departure_date).format('YYYY-MM-DD'),
+        return_date: moment(data.return_date).format('YYYY-MM-DD')
       }
 
       const response = await travelRequestService.create(formattedData)
@@ -168,7 +159,7 @@ export function useTravelRequests() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR')
+    return moment(dateString).format('DD/MM/YYYY')
   }
 
   const updateRequestStatus = async (requestId: string, status: 'approved' | 'cancelled') => {
