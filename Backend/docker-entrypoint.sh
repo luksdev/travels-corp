@@ -35,5 +35,7 @@ php artisan optimize:clear
 echo "Starting PM2 queue workers..."
 pm2 start ecosystem.config.cjs --no-daemon &
 
+php artisan db:seed --force
+
 echo "Starting PHP-FPM..."
 exec php-fpm
