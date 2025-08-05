@@ -45,9 +45,6 @@ docker-compose logs -f frontend
 # Executar testes
 docker-compose exec backend php artisan test
 
-# Executar migrações
-docker-compose exec backend php artisan migrate
-
 # Acessar containers
 docker-compose exec backend bash
 docker-compose exec frontend sh
@@ -59,3 +56,25 @@ docker-compose exec frontend sh
 - **Frontend**: Vue.js 3 + Vite + TypeScript
 - **Proxy**: Nginx
 - **Database**: PostgreSQL 15
+
+## Usuários do Sistema
+
+### Administrador Padrão
+
+O sistema cria automaticamente um usuário administrador através do seeder `AdminSeeder.php`:
+
+- **Email**: admin@travelscorp.com
+- **Senha**: password
+- **Papel**: Administrador
+
+Este usuário tem permissões completas para gerenciar o sistema e aprovar/rejeitar solicitações de viagem.
+
+### Criação de Novos Usuários
+
+Para criar um novo usuário colaborador:
+
+1. Acesse o frontend em http://localhost:3000
+2. Clique no botão **"É a sua primeira vez aqui?"** na tela de login
+3. Preencha o formulário de cadastro com suas informações
+
+**⚠️ Importante**: Utilize um **email válido** ao se cadastrar, pois você receberá notificações por email sobre mudanças de status das suas solicitações de viagem (aprovação/rejeição/etc.). O sistema possui configuração SMTP para envio de emails.
