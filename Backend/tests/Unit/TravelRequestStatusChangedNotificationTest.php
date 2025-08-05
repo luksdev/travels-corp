@@ -46,13 +46,13 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
         $mailMessage  = $notification->toMail($user);
 
         $this->assertInstanceOf(MailMessage::class, $mailMessage);
-        $this->assertEquals('Travel Request approved', $mailMessage->subject);
-        $this->assertStringContainsString('Hello John Doe!', $mailMessage->greeting);
+        $this->assertEquals('Solicitação de Viagem aprovada', $mailMessage->subject);
+        $this->assertStringContainsString('Olá John Doe!', $mailMessage->greeting);
         $this->assertStringContainsString('Tokyo, Japan', $mailMessage->introLines[0]);
-        $this->assertStringContainsString('approved', $mailMessage->introLines[0]);
-        $this->assertStringContainsString('Dec 1, 2025', $mailMessage->introLines[1]);
-        $this->assertStringContainsString('Dec 15, 2025', $mailMessage->introLines[2]);
-        $this->assertStringContainsString('Thank you for using OnHappy!', $mailMessage->introLines[3]);
+        $this->assertStringContainsString('Sua solicitação de viagem para Tokyo, Japan foi aprovada.', $mailMessage->introLines[0]);
+        $this->assertStringContainsString('Data de Partida: 1/12/2025', $mailMessage->introLines[1]);
+        $this->assertStringContainsString('Data de Retorno: 15/12/2025', $mailMessage->introLines[2]);
+        $this->assertStringContainsString('Obrigado por usar a TravelsCorp!', $mailMessage->introLines[3]);
     }
 
     /**
@@ -69,10 +69,10 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
         $notification = new TravelRequestStatusChanged($travelRequest, 'requested', 'cancelled');
         $mailMessage  = $notification->toMail($user);
 
-        $this->assertEquals('Travel Request cancelled', $mailMessage->subject);
-        $this->assertStringContainsString('Hello Jane Doe!', $mailMessage->greeting);
+        $this->assertEquals('Solicitação de Viagem cancelada', $mailMessage->subject);
+        $this->assertStringContainsString('Olá Jane Doe!', $mailMessage->greeting);
         $this->assertStringContainsString('Paris, France', $mailMessage->introLines[0]);
-        $this->assertStringContainsString('cancelled', $mailMessage->introLines[0]);
+        $this->assertStringContainsString('Sua solicitação de viagem para Paris, France foi cancelada.', $mailMessage->introLines[0]);
     }
 
     /**
@@ -92,8 +92,8 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
         $mailMessage  = $notification->toMail($user);
 
         $this->assertCount(3, $mailMessage->introLines);
-        $this->assertStringContainsString('Dec 1, 2025', $mailMessage->introLines[1]);
-        $this->assertStringContainsString('Thank you for using OnHappy!', $mailMessage->introLines[2]);
+        $this->assertStringContainsString('Data de Partida: 1/12/2025', $mailMessage->introLines[1]);
+        $this->assertStringContainsString('Obrigado por usar a TravelsCorp!', $mailMessage->introLines[2]);
     }
 
     /**
@@ -119,7 +119,7 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
             'new_status'        => 'approved',
             'departure_date'    => $travelRequest->departure_date,
             'return_date'       => $travelRequest->return_date,
-            'message'           => 'Your travel request to Tokyo, Japan has been approved.',
+            'message'           => 'Sua solicitação de viagem para Tokyo, Japan foi aprovada.',
         ];
 
         $this->assertEquals($expectedArray, $array);
@@ -142,7 +142,7 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
         $array        = $notification->toArray($user);
 
         $this->assertNull($array['return_date']);
-        $this->assertEquals('Your travel request to Tokyo, Japan has been approved.', $array['message']);
+        $this->assertEquals('Sua solicitação de viagem para Tokyo, Japan foi aprovada.', $array['message']);
     }
 
     /**
@@ -198,10 +198,10 @@ class TravelRequestStatusChangedNotificationTest extends TestCase
 
         $approvedNotification = new TravelRequestStatusChanged($travelRequest, 'requested', 'approved');
         $approvedArray        = $approvedNotification->toArray($user);
-        $this->assertStringContainsString('approved', $approvedArray['message']);
+        $this->assertStringContainsString('Sua solicitação de viagem para Tokyo, Japan foi aprovada.', $approvedArray['message']);
 
         $cancelledNotification = new TravelRequestStatusChanged($travelRequest, 'requested', 'cancelled');
         $cancelledArray        = $cancelledNotification->toArray($user);
-        $this->assertStringContainsString('cancelled', $cancelledArray['message']);
+        $this->assertStringContainsString('Sua solicitação de viagem para Tokyo, Japan foi cancelada.', $cancelledArray['message']);
     }
 }

@@ -236,19 +236,20 @@ class TravelRequestTest extends TestCase
     }
 
     /**
-     * Test user can cancel their own travel request when status is requested
+     * Test admin can cancel travel request when status is requested
      */
-    public function test_user_can_cancel_own_travel_request_when_requested(): void
+    public function test_admin_can_cancel_travel_request_when_requested(): void
     {
         Notification::fake();
 
+        $admin         = User::factory()->create(['role' => UserRole::ADMIN]);
         $user          = User::factory()->create();
         $travelRequest = TravelRequest::factory()->create([
             'user_id' => $user->id,
             'status'  => 'requested',
         ]);
 
-        $response = $this->actingAs($user, 'api')
+        $response = $this->actingAs($admin, 'api')
             ->patchJson("/api/travel-requests/{$travelRequest->id}/cancel");
 
         $response->assertOk()
@@ -262,6 +263,23 @@ class TravelRequestTest extends TestCase
         ]);
 
         Notification::assertSentTo($user, TravelRequestStatusChanged::class);
+    }
+
+    /**
+     * Test user cannot cancel their own travel request (only admins can)
+     */
+    public function test_user_cannot_cancel_own_travel_request(): void
+    {
+        $user          = User::factory()->create();
+        $travelRequest = TravelRequest::factory()->create([
+            'user_id' => $user->id,
+            'status'  => 'requested',
+        ]);
+
+        $response = $this->actingAs($user, 'api')
+            ->patchJson("/api/travel-requests/{$travelRequest->id}/cancel");
+
+        $response->assertForbidden();
     }
 
     /**

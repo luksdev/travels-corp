@@ -71,7 +71,7 @@ const togglePasswordVisibility = () => {
           'w-full h-11 px-3 text-xs pt-6 pb-2 border-1 rounded-lg transition-all duration-200 ease-in-out outline-none bg-white',
           isPassword ? 'pr-10' : '',
           hasError 
-            ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-200 text-red-500'
+            ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-red-200 text-rose-400'
             : 'border-gray-200 focus:border-primary focus:ring-1 focus:ring-primary/20',
           'placeholder:text-gray-400 placeholder:transition-opacity placeholder:duration-200',
           props.class,
@@ -87,7 +87,7 @@ const togglePasswordVisibility = () => {
             ? 'top-1 text-xs font-normal'
             : 'top-1/2 transform -translate-y-1/2 text-xs',
           hasError
-            ? 'text-red-500'
+            ? 'text-rose-400'
             : isLabelFloating 
               ? 'text-primary' 
               : 'text-gray-600'
@@ -114,7 +114,7 @@ const togglePasswordVisibility = () => {
     <!-- Error Message -->
     <span 
       v-if="errorMessage" 
-      class="block text-red-500 text-xs px-1"
+      class="block text-rose-400 text-xs px-1"
     >
       {{ errorMessage }}
     </span>

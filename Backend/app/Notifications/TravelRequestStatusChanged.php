@@ -42,18 +42,18 @@ class TravelRequestStatusChanged extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $statusText = $this->newStatus === 'approved' ? 'approved' : 'cancelled';
-        $subject    = "Travel Request {$statusText}";
+        $statusText = $this->newStatus === 'approved' ? 'aprovada' : 'cancelada';
+        $subject    = "Solicitação de Viagem ".$statusText;
 
         return (new MailMessage())
             ->subject($subject)
-            ->greeting("Hello {$notifiable->name}!")
-            ->line("Your travel request to {$this->travelRequest->destination} has been {$statusText}.")
-            ->line("Departure Date: {$this->travelRequest->departure_date->format('M j, Y')}")
+            ->greeting("Olá ".$notifiable->name."!")
+            ->line("Sua solicitação de viagem para ".$this->travelRequest->destination." foi ".$statusText.".")
+            ->line("Data de Partida: ".$this->travelRequest->departure_date->format('j/m/Y'))
             ->when($this->travelRequest->return_date, function ($mail) {
-                return $mail->line("Return Date: {$this->travelRequest->return_date->format('M j, Y')}");
+                return $mail->line("Data de Retorno: ".$this->travelRequest->return_date->format('j/m/Y'));
             })
-            ->line('Thank you for using OnHappy!');
+            ->line('Obrigado por usar a TravelsCorp!');
     }
 
     /**
@@ -63,6 +63,8 @@ class TravelRequestStatusChanged extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
+        $statusText = $this->newStatus === 'approved' ? 'aprovada' : 'cancelada';
+
         return [
             'travel_request_id' => $this->travelRequest->id,
             'destination'       => $this->travelRequest->destination,
@@ -70,7 +72,7 @@ class TravelRequestStatusChanged extends Notification implements ShouldQueue
             'new_status'        => $this->newStatus,
             'departure_date'    => $this->travelRequest->departure_date,
             'return_date'       => $this->travelRequest->return_date,
-            'message'           => "Your travel request to {$this->travelRequest->destination} has been {$this->newStatus}.",
+            'message'           => "Sua solicitação de viagem para ".$this->travelRequest->destination." foi ".$statusText.".",
         ];
     }
 }

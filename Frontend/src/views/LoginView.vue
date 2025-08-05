@@ -9,17 +9,12 @@
       </div>
 
       <form @submit="onSubmit" class="w-full space-y-3">
-        <div v-if="error"
-             class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm text-center">
-          {{ error }}
-        </div>
-
         <FormInput
             name="email"
             id="email"
             type="email"
-            label="E-mail ou CPF"
-            placeholder="Digite seu e-mail ou CPF"
+            label="E-mail"
+            placeholder="Digite seu e-mail"
         />
 
         <FormInput
@@ -29,12 +24,6 @@
             label="Senha"
             placeholder="Digite sua senha"
         />
-
-        <div class="text-left">
-          <button type="button" class="text-xs text-primary hover:text-primary-800 hover:underline">
-            Esqueceu sua senha
-          </button>
-        </div>
 
         <div class="space-y-3">
           <Button
@@ -61,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import {useForm} from 'vee-validate'
 import {toTypedSchema} from '@vee-validate/zod'
 import {useAuth} from '../composables/useAuth'
@@ -71,7 +60,10 @@ import {PlaneTakeoff} from 'lucide-vue-next'
 import {loginSchema, type LoginForm} from '@/schemas/auth'
 import AuthLayout from "@/components/AuthLayout.vue";
 
-const {login, isLoading, error, clearError} = useAuth()
+const auth = useAuth()
+const {login, clearError} = auth
+
+let isLoading = ref(false)
 
 const {handleSubmit, values, meta} = useForm<LoginForm>({
   validationSchema: toTypedSchema(loginSchema),
@@ -87,11 +79,15 @@ const isFormValid = computed(() => {
 
 const onSubmit = handleSubmit(async (formData) => {
   clearError()
+  isLoading.value = true
 
   try {
     await login(formData)
+
+    isLoading.value = false
   } catch (err) {
     console.error('Erro no login:', err)
+    isLoading.value = false
   }
 })
 </script>

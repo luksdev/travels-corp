@@ -6,6 +6,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TravelRequestController;
 use Illuminate\Support\Facades\Route;
 
+// Health check endpoint (no auth required)
+Route::get('health', function () {
+    return response()->json(['status' => 'ok'], 200);
+});
+
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
@@ -18,6 +23,9 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('travel-requests/stats', [TravelRequestController::class, 'stats'])
+        ->name('travel-requests.stats');
+
     Route::apiResource('travel-requests', TravelRequestController::class);
 
     Route::patch('travel-requests/{travel_request}/status', [TravelRequestController::class, 'updateStatus'])

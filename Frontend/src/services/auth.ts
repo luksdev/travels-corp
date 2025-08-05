@@ -1,15 +1,18 @@
 import api from './api'
-import type { LoginData, RegisterData, AuthResponse, User } from '../types/auth'
+import type { LoginData, RegisterData, AuthResponse, User, ApiResponse } from '../types/auth'
 
 export const authService = {
   async login(data: LoginData): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/login', data)
-    return response.data
+    const response = await api.post<ApiResponse<AuthResponse>>('/auth/login', data)
+
+    console.log(response);
+
+    return response.data.data
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/register', data)
-    return response.data
+    const response = await api.post<ApiResponse<AuthResponse>>('/auth/register', data)
+    return response.data.data
   },
 
   async logout(): Promise<void> {
@@ -22,8 +25,8 @@ export const authService = {
   },
 
   async getUser(): Promise<User> {
-    const response = await api.get<User>('/auth/user')
-    return response.data
+    const response = await api.get<ApiResponse<User>>('/auth/user')
+    return response.data.data
   },
 
   saveTokens(authResponse: AuthResponse): void {

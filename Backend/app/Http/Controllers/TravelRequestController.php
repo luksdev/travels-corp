@@ -83,9 +83,12 @@ class TravelRequestController extends Controller
 
     /**
      * Update travel request status
+     * @throws AuthorizationException
      */
     public function updateStatus(UpdateStatusRequest $request, TravelRequest $travelRequest): JsonResponse
     {
+        $this->authorize('changeStatus', $travelRequest);
+
         $result = $this->travelRequestService->updateStatus($travelRequest, $request->status);
 
         if (! $result['success']) {
@@ -119,6 +122,18 @@ class TravelRequestController extends Controller
         return response()->json([
             'data'    => new TravelRequestResource($result['travelRequest']),
             'message' => $result['message'],
+        ]);
+    }
+
+    /**
+     * Get travel requests statistics
+     */
+    public function stats(Request $request): JsonResponse
+    {
+        $stats = $this->travelRequestService->getStats($request->user());
+
+        return response()->json([
+            'data' => $stats,
         ]);
     }
 

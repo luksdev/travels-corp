@@ -4,40 +4,29 @@ declare(strict_types = 1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\Auth\AuthResource;
 use App\Http\Resources\UserResource;
-use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        private readonly AuthService $authService
+    ) {
+    }
+
     /**
      * Register a new user
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-            'role'     => UserRole::USER,
-        ]);
+        $authData = $this->authService->register($request->validated());
 
-        $token = JWTAuth::fromUser($user);
-
-        $authResource = new AuthResource([
-            'message'      => 'User created successfully',
-            'user'         => $user,
-            'access_token' => $token,
-            'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60,
-        ]);
+        $authResource = new AuthResource($authData);
 
         return response()->json([
             'data' => $authResource->toArray(request()),
@@ -51,20 +40,16 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (! $token = auth()->attempt($credentials)) {
+        $authData = $this->authService->login($credentials);
+
+        if (! $authData) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid credentials',
-            ], 401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
-        return new AuthResource([
-            'message'      => 'Login successful',
-            'user'         => auth()->user(),
-            'access_token' => $token,
-            'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60,
-        ]);
+        return new AuthResource($authData);
     }
 
     /**
@@ -80,7 +65,7 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        auth()->logout();
+        $this->authService->logout();
 
         return response()->json([
             'success' => true,
@@ -93,12 +78,8 @@ class AuthController extends Controller
      */
     public function refresh(): AuthResource
     {
-        return new AuthResource([
-            'message'      => 'Token refreshed successfully',
-            'user'         => auth()->user(),
-            'access_token' => auth()->refresh(),
-            'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60,
-        ]);
+        $authData = $this->authService->refresh();
+
+        return new AuthResource($authData);
     }
 }

@@ -173,4 +173,23 @@ class TravelRequestService
     {
         return $this->getFilteredQuery($request, $user)->paginate($perPage);
     }
+
+    /**
+     * Get travel requests statistics
+     */
+    public function getStats(User $user): array
+    {
+        $query = TravelRequest::query();
+
+        if (! $user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        }
+
+        return [
+            'total'     => $query->count(),
+            'requested' => (clone $query)->where('status', 'requested')->count(),
+            'approved'  => (clone $query)->where('status', 'approved')->count(),
+            'cancelled'  => (clone $query)->where('status', 'cancelled')->count(),
+        ];
+    }
 }

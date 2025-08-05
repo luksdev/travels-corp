@@ -150,37 +150,39 @@ class TravelRequestPolicyTest extends TestCase
     }
 
     /**
-     * Test cancel allows user to cancel their own requested travel request
+     * Test cancel allows only admins to cancel requested travel requests
      */
-    public function test_cancel_allows_user_to_cancel_their_own_requested_travel_request(): void
+    public function test_cancel_allows_only_admins_to_cancel_requested_travel_requests(): void
     {
+        $admin         = User::factory()->create(['role' => UserRole::ADMIN]);
         $user          = User::factory()->create();
         $travelRequest = TravelRequest::factory()->create([
             'user_id' => $user->id,
             'status'  => 'requested',
         ]);
 
-        $this->assertTrue($this->policy->cancel($user, $travelRequest));
-    }
-
-    /**
-     * Test cancel prevents user from cancelling their own approved travel request
-     */
-    public function test_cancel_prevents_user_from_cancelling_their_own_approved_travel_request(): void
-    {
-        $user          = User::factory()->create();
-        $travelRequest = TravelRequest::factory()->create([
-            'user_id' => $user->id,
-            'status'  => 'approved',
-        ]);
-
+        $this->assertTrue($this->policy->cancel($admin, $travelRequest));
         $this->assertFalse($this->policy->cancel($user, $travelRequest));
     }
 
     /**
-     * Test cancel prevents user from cancelling other user's travel request
+     * Test cancel prevents admins from cancelling approved travel requests
      */
-    public function test_cancel_prevents_user_from_cancelling_other_users_travel_request(): void
+    public function test_cancel_prevents_admins_from_cancelling_approved_travel_requests(): void
+    {
+        $admin         = User::factory()->create(['role' => UserRole::ADMIN]);
+        $travelRequest = TravelRequest::factory()->create([
+            'user_id' => $admin->id,
+            'status'  => 'approved',
+        ]);
+
+        $this->assertFalse($this->policy->cancel($admin, $travelRequest));
+    }
+
+    /**
+     * Test cancel prevents regular users from cancelling any travel request
+     */
+    public function test_cancel_prevents_regular_users_from_cancelling_any_travel_request(): void
     {
         $user          = User::factory()->create();
         $otherUser     = User::factory()->create();

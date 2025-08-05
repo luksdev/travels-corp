@@ -14,7 +14,6 @@ class TravelRequestPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Users can view their own requests, admins can view all
         return true;
     }
 
@@ -23,7 +22,6 @@ class TravelRequestPolicy
      */
     public function view(User $user, TravelRequest $travelRequest): bool
     {
-        // Users can view their own requests, admins can view all
         return $user->isAdmin() || $travelRequest->user_id === $user->id;
     }
 
@@ -32,7 +30,6 @@ class TravelRequestPolicy
      */
     public function create(User $user): bool
     {
-        // All authenticated users can create travel requests
         return true;
     }
 
@@ -41,7 +38,6 @@ class TravelRequestPolicy
      */
     public function update(User $user, TravelRequest $travelRequest): bool
     {
-        // Users can only update their own requests if status is 'requested'
         return $travelRequest->user_id === $user->id && $travelRequest->status === 'requested';
     }
 
@@ -55,12 +51,11 @@ class TravelRequestPolicy
     }
 
     /**
-     * Cancel travel request after approval
+     * Cancel travel request
      */
     public function cancel(User $user, TravelRequest $travelRequest): bool
     {
-        // Users cannot cancel approved requests, only requested ones
-        return $travelRequest->user_id === $user->id && $travelRequest->status === 'requested';
+        return $user->isAdmin() && $travelRequest->status === 'requested';
     }
 
     /**
@@ -68,7 +63,6 @@ class TravelRequestPolicy
      */
     public function changeStatus(User $user, TravelRequest $travelRequest): bool
     {
-        // Only admins can change status
         return $user->isAdmin();
     }
 
