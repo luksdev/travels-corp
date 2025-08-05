@@ -15,15 +15,9 @@ if [ ! -f /var/www/.initialized ]; then
 
     wait_for_db
 
-    if ! php artisan config:show app.key > /dev/null 2>&1 || [ -z "$(php artisan config:show app.key)" ]; then
-        echo "Generating application key..."
-        php artisan key:generate --force
-    fi
+    php artisan key:generate --force
 
-    if ! php artisan config:show jwt.secret > /dev/null 2>&1 || [ -z "$(php artisan config:show jwt.secret)" ]; then
-        echo "Generating JWT secret..."
-        php artisan jwt:secret --force
-    fi
+    php artisan jwt:secret
 
     echo "Running migrations..."
     php artisan migrate --force
@@ -32,16 +26,13 @@ if [ ! -f /var/www/.initialized ]; then
         echo "Running seeders..."
         php artisan db:seed --force
     fi
-
-    touch /var/www/.initialized
-    echo "Initialization complete."
 else
     echo "Container already initialized, skipping setup..."
 fi
 
 echo "Clearing Laravel cache..."
 php artisan optimize:clear
-php artisan migrate --seed
+#php artisan migrate --seed
 
 echo "Starting PHP-FPM..."
 exec php-fpm
