@@ -2,7 +2,7 @@ import axios from 'axios'
 import router from '../router'
 
 const api = axios.create({
-    baseURL: 'https://travelscorp-api.geanpedro.com.br:80/api',
+    baseURL: 'http://localhost:8000/api',
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
