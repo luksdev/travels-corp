@@ -10,7 +10,7 @@ Sistema de solicitação de viagens corporativas usando Laravel (Backend) + Vue.
 
 ```bash
 # Copiar o arquivo .env.example para .env
-cp .env.example .env
+cp ./Backend/.env.example ./Backend/.env
 
 # Iniciar todos os serviços
 docker-compose up -d --build

@@ -21,9 +21,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock ./
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+RUN composer install --no-scripts
 
 COPY . .
+
+RUN composer dump-autoload && php artisan package:discover
 
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 755 /var/www/storage \
