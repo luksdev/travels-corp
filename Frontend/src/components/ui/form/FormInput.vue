@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { HTMLAttributes } from "vue"
 import { useField } from 'vee-validate'
-import { computed, ref } from "vue"
+import { computed, ref, onMounted, onUnmounted } from "vue"
 import { cn } from "@/lib/utils"
 import { Eye, EyeOff } from "lucide-vue-next"
 
@@ -29,7 +29,7 @@ const hasValue = computed(() => {
 const hasFocused = ref(false)
 
 const isLabelFloating = computed(() => {
-  return hasValue.value ||  hasFocused.value
+  return hasValue.value || hasFocused.value
 })
 
 const isPassword = computed(() => {

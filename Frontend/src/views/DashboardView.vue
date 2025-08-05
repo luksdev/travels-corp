@@ -174,7 +174,7 @@
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Solicitante</TableHead>
+                <TableHead v-if="isAdmin">Solicitante</TableHead>
                 <TableHead>Destino</TableHead>
                 <TableHead>Partida</TableHead>
                 <TableHead>Retorno</TableHead>
@@ -186,7 +186,7 @@
             <TableBody>
               <!-- Loading Skeleton -->
               <TableRow v-if="isLoading" v-for="i in 5" :key="i">
-                <TableCell>
+                <TableCell v-if="isAdmin">
                   <div>
                     <Skeleton class="h-4 w-24 mb-1"/>
                     <Skeleton class="h-3 w-32"/>
@@ -214,7 +214,7 @@
 
               <!-- Empty State -->
               <TableRow v-else-if="travelRequests.length === 0">
-                <TableCell colspan="7" class="text-center py-12">
+                <TableCell :colspan="isAdmin ? 7 : 6" class="text-center py-12">
                   <div class="text-gray-500">
                     <p class="text-lg mb-2">Nenhuma solicitação encontrada</p>
                     <p class="text-sm">Tente ajustar os filtros ou criar uma nova solicitação</p>
@@ -224,7 +224,7 @@
 
               <!-- Data Rows -->
               <TableRow v-else v-for="request in travelRequests" :key="request.id" class="hover:bg-gray-50">
-                <TableCell class="font-medium">
+                <TableCell v-if="isAdmin" class="font-medium">
                   <div>
                     <p class="font-medium">{{ request.user?.name || 'N/A' }}</p>
                     <p class="text-sm text-gray-500">{{ request.user?.email || 'N/A' }}</p>
@@ -243,7 +243,6 @@
                 </TableCell>
                 <TableCell class="text-right">
                   <div class="flex items-center justify-end gap-1">
-                    <!-- Admin Actions -->
                     <template v-if="isAdmin && request.status === 'requested'">
                       <Button
                           variant="ghost"
@@ -265,7 +264,6 @@
                       </Button>
                     </template>
 
-                    <!-- View Button -->
                     <Button variant="ghost" size="sm" @click="viewRequest(request.id)" title="Ver detalhes">
                       <Eye class="w-4 h-4"/>
                     </Button>

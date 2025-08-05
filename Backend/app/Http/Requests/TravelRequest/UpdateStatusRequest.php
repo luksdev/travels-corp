@@ -42,9 +42,9 @@ class UpdateStatusRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'status.required' => 'The status field is required.',
-            'status.string'   => 'The status must be a string.',
-            'status.in'       => 'The status must be either approved or cancelled.',
+            'status.required' => 'O campo status é obrigatório.',
+            'status.string'   => 'O status deve ser uma string.',
+            'status.in'       => 'O status deve ser aprovado ou cancelado.',
         ];
     }
 }

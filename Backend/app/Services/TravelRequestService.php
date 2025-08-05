@@ -169,7 +169,7 @@ class TravelRequestService
     /**
      * Get paginated travel requests
      */
-    public function getPaginatedRequests(Request $request, User $user, int $perPage = 15): LengthAwarePaginator
+    public function getPaginatedRequests(Request $request, User $user, int $perPage = 5): LengthAwarePaginator
     {
         return $this->getFilteredQuery($request, $user)->paginate($perPage);
     }
@@ -189,7 +189,7 @@ class TravelRequestService
             'total'     => $query->count(),
             'requested' => (clone $query)->where('status', 'requested')->count(),
             'approved'  => (clone $query)->where('status', 'approved')->count(),
-            'cancelled'  => (clone $query)->where('status', 'cancelled')->count(),
+            'cancelled' => (clone $query)->where('status', 'cancelled')->count(),
         ];
     }
 }

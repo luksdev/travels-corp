@@ -43,15 +43,15 @@ class TravelRequestStatusChanged extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $statusText = $this->newStatus === 'approved' ? 'aprovada' : 'cancelada';
-        $subject    = "Solicitação de Viagem ".$statusText;
+        $subject    = "Solicitação de Viagem " . $statusText;
 
         return (new MailMessage())
             ->subject($subject)
-            ->greeting("Olá ".$notifiable->name."!")
-            ->line("Sua solicitação de viagem para ".$this->travelRequest->destination." foi ".$statusText.".")
-            ->line("Data de Partida: ".$this->travelRequest->departure_date->format('j/m/Y'))
+            ->greeting("Olá " . $notifiable->name . "!")
+            ->line("Sua solicitação de viagem para " . $this->travelRequest->destination . " foi " . $statusText . ".")
+            ->line("Data de Partida: " . $this->travelRequest->departure_date->format('j/m/Y'))
             ->when($this->travelRequest->return_date, function ($mail) {
-                return $mail->line("Data de Retorno: ".$this->travelRequest->return_date->format('j/m/Y'));
+                return $mail->line("Data de Retorno: " . $this->travelRequest->return_date->format('j/m/Y'));
             })
             ->line('Obrigado por usar a TravelsCorp!');
     }
@@ -72,7 +72,7 @@ class TravelRequestStatusChanged extends Notification implements ShouldQueue
             'new_status'        => $this->newStatus,
             'departure_date'    => $this->travelRequest->departure_date,
             'return_date'       => $this->travelRequest->return_date,
-            'message'           => "Sua solicitação de viagem para ".$this->travelRequest->destination." foi ".$statusText.".",
+            'message'           => "Sua solicitação de viagem para " . $this->travelRequest->destination . " foi " . $statusText . ".",
         ];
     }
 }

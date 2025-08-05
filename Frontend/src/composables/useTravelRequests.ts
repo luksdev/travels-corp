@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { toast } from 'vue-sonner'
+import moment from 'moment'
 import { travelRequestService } from '@/services/travelRequest'
 import type { TravelRequest, TravelRequestFilters } from '@/types/travelRequest'
 
@@ -56,7 +57,7 @@ export function useTravelRequests() {
       totalItems.value = response.meta.total[0] || 0
       
     } catch (err: any) {
-      const message = err.response?.data?.message || 'Erro ao carregar solicitações'
+      const message = err.response?.data?.message || 'Nenhum dado encontrado! Tente novamente.'
       error.value = message
       toast.error(message)
     } finally {

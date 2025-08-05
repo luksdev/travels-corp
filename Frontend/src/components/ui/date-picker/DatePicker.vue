@@ -1,5 +1,5 @@
 <template>
-  <Popover>
+  <Popover v-model:open="isOpen">
     <PopoverTrigger as-child>
       <Button
         variant="outline"
@@ -54,6 +54,7 @@ const df = new DateFormatter("pt-BR", {
 })
 
 const value = ref<DateValue>()
+const isOpen = ref(false)
 
 const dateToDateValue = (date: Date | null): DateValue | undefined => {
   if (!date) return undefined
@@ -76,5 +77,6 @@ const handleDateChange = (dateValue: DateValue | undefined) => {
   value.value = dateValue
   const jsDate = dateValueToDate(dateValue)
   emit('update:modelValue', jsDate)
+  isOpen.value = false
 }
 </script>

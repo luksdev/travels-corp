@@ -48,18 +48,18 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'      => 'The name field is required.',
-            'name.string'        => 'The name must be a string.',
-            'name.max'           => 'The name may not be greater than 255 characters.',
-            'email.required'     => 'The email field is required.',
-            'email.string'       => 'The email must be a string.',
-            'email.email'        => 'The email must be a valid email address.',
-            'email.max'          => 'The email may not be greater than 255 characters.',
-            'email.unique'       => 'The email has already been taken.',
-            'password.required'  => 'The password field is required.',
-            'password.string'    => 'The password must be a string.',
-            'password.min'       => 'The password must be at least 8 characters.',
-            'password.confirmed' => 'The password confirmation does not match.',
+            'name.required'      => 'O campo nome é obrigatório.',
+            'name.string'        => 'O nome deve ser uma string.',
+            'name.max'           => 'O nome não pode ter mais de 255 caracteres.',
+            'email.required'     => 'O campo email é obrigatório.',
+            'email.string'       => 'O email deve ser uma string.',
+            'email.email'        => 'O email deve ser um endereço de email válido.',
+            'email.max'          => 'O email não pode ter mais de 255 caracteres.',
+            'email.unique'       => 'Este email já está sendo usado.',
+            'password.required'  => 'O campo senha é obrigatório.',
+            'password.string'    => 'A senha deve ser uma string.',
+            'password.min'       => 'A senha deve ter pelo menos 8 caracteres.',
+            'password.confirmed' => 'A confirmação da senha não confere.',
         ];
     }
 }

@@ -18,7 +18,7 @@ Uma API REST desenvolvida em Laravel 12.x para gerenciamento de pedidos de viage
 
 - **Laravel 12.x** com PHP 8.2
 - **JWT Authentication** (`tymon/jwt-auth`)
-- **SQLite** para desenvolvimento e testes
+- **PostgreSQL** para banco de dados
 - **Laravel Pint** para code style (PSR-12)
 - **PHPUnit** para testes automatizados
 - **Vite** para build de assets
@@ -49,23 +49,14 @@ cp .env.example .env
 php artisan key:generate
 php artisan jwt:secret
 
-# Configure database (SQLite)
-touch database/database.sqlite
+# Configure database
+# Certifique-se de configurar DB_CONNECTION, DB_HOST, DB_PORT, DB_DATABASE no .env
 
 # Execute migrações e seeders
 php artisan migrate --seed
 
 # Build assets
 npm run build
-```
-
-### Configuração do JWT
-
-O JWT já está configurado automaticamente. Para personalizar:
-
-```bash
-# Publique a configuração (opcional)
-php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
 ```
 
 ## Executando o Projeto
@@ -115,6 +106,7 @@ PUT    /api/travel-requests/{id}                      # Atualizar pedido
 DELETE /api/travel-requests/{id}                      # Deletar pedido
 PATCH  /api/travel-requests/{id}/status               # Atualizar status (admin)
 PATCH  /api/travel-requests/{id}/cancel               # Cancelar pedido
+GET    /api/travel-requests/stats                     # Estatísticas dos pedidos
 ```
 
 ### Filtros de Listagem
@@ -196,9 +188,6 @@ php artisan test tests/Unit/
 
 # Teste específico
 php artisan test --filter=TravelRequestTest
-
-# Com cobertura (se configurado)
-php artisan test --coverage
 ```
 
 ### Estrutura de Testes
@@ -210,26 +199,13 @@ php artisan test --coverage
 
 ## Code Quality
 
-### Formatação de Código
-
 ```bash
-# Aplicar Laravel Pint (PSR-12 + regras customizadas)
+# Aplicar Laravel Pint (PSR-12)
 ./vendor/bin/pint
 
 # Verificar sem aplicar correções
 ./vendor/bin/pint --test
-
-# Formatar pasta específica
-./vendor/bin/pint app/Http/Controllers/
 ```
-
-### Regras de Code Style
-
-- **PSR-12** compliance
-- **Strict types** obrigatório
-- **Readonly properties** quando aplicável
-- **PHP 8.2+** features
-- Documentação PHPDoc completa
 
 ## Arquitetura
 
@@ -257,79 +233,15 @@ app/
 - **Route Model Binding**: Injeção automática de models
 - **Queue Jobs**: Processamento assíncrono de notificações
 
-## Banco de Dados
 
-### Migrations
+## Possíveis Melhorias
 
-```bash
-# Executar migrações
-php artisan migrate
-
-# Rollback última migração
-php artisan migrate:rollback
-
-# Reset completo com seeders
-php artisan migrate:fresh --seed
-```
-
-### Seeders
-
-```bash
-# Executar seeders
-php artisan db:seed
-
-# Seeder específico
-php artisan db:seed --class=TravelRequestSeeder
-```
-
-## Monitoramento e Logs
-
-### Logs de Aplicação
-
-```bash
-# Visualizar logs em tempo real
-php artisan pail
-
-# Logs por nível
-php artisan pail --filter="level:error"
-```
-
-### Queue Monitoring
-
-```bash
-# Processar jobs da queue
-php artisan queue:work
-
-# Com limite de tentativas
-php artisan queue:work --tries=3
-
-# Para desenvolvimento
-php artisan queue:listen --tries=1
-```
-
-## Deployment
-
-### Produção
-
-```bash
-# Otimizações de produção
-composer install --no-dev --optimize-autoloader
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-npm run build
-```
-
-### Variáveis de Ambiente Importantes
-
-```env
-APP_ENV=production
-APP_DEBUG=false
-JWT_SECRET=your-jwt-secret
-DB_CONNECTION=sqlite
-QUEUE_CONNECTION=database
-MAIL_MAILER=smtp
-```
+- **API de Cidades**: Implementar endpoint para busca de cidades/destinos com autocomplete
+- **Upload de Anexos**: Permitir anexar documentos aos pedidos de viagem
+- **Relatórios Avançados**: Dashboard com gráficos e métricas detalhadas
+- **Integração Externa**: APIs de voos, hotéis e clima
+- **Notificações Push**: Notificações em tempo real
+- **Aprovação em Lote**: Permitir aprovar/cancelar múltiplos pedidos
 
 ## Contribuição
 
@@ -341,10 +253,8 @@ MAIL_MAILER=smtp
 
 ### Code Standards
 
-- Siga PSR-12 e execute `./vendor/bin/pint` antes do commit
+- Execute `./vendor/bin/pint` antes do commit
 - Escreva testes para novas funcionalidades
-- Mantenha cobertura de testes alta
-- Use strict types e PHP 8.2+ features
 
 ## Licença
 

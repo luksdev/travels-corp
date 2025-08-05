@@ -28,7 +28,7 @@ class UpdateTravelRequestRequest extends FormRequest
     {
         return [
             'destination'    => 'sometimes|required|string|max:255',
-            'departure_date' => 'sometimes|required|date|after:today',
+            'departure_date' => 'sometimes|required|date|after_or_equal:today',
             'return_date'    => 'nullable|date|after:departure_date',
         ];
     }
@@ -39,14 +39,14 @@ class UpdateTravelRequestRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'destination.required'    => 'The destination field is required.',
-            'destination.string'      => 'The destination must be a string.',
-            'destination.max'         => 'The destination may not be greater than 255 characters.',
-            'departure_date.required' => 'The departure date field is required.',
-            'departure_date.date'     => 'The departure date must be a valid date.',
-            'departure_date.after'    => 'The departure date must be after today.',
-            'return_date.date'        => 'The return date must be a valid date.',
-            'return_date.after'       => 'The return date must be after the departure date.',
+            'destination.required'          => 'O campo destino é obrigatório.',
+            'destination.string'            => 'O destino deve ser uma string.',
+            'destination.max'               => 'O destino não pode ter mais de 255 caracteres.',
+            'departure_date.required'       => 'O campo data de partida é obrigatório.',
+            'departure_date.date'           => 'A data de partida deve ser uma data válida.',
+            'departure_date.after_or_equal' => 'A data de partida deve ser hoje ou posterior.',
+            'return_date.date'              => 'A data de retorno deve ser uma data válida.',
+            'return_date.after'             => 'A data de retorno deve ser posterior à data de partida.',
         ];
     }
 }
