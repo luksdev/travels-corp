@@ -12,8 +12,12 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     postgresql-client \
+    nodejs \
+    npm \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g pm2
 
 RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
 

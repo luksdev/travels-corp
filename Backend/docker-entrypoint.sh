@@ -17,22 +17,23 @@ if [ ! -f /var/www/.initialized ]; then
 
     php artisan key:generate --force
 
-    php artisan jwt:secret
+    php artisan jwt:secret --force
 
     echo "Running migrations..."
     php artisan migrate --force
 
-    if [ $(php artisan tinker --execute="echo \App\Models\User::count();") -eq 0 ]; then
-        echo "Running seeders..."
-        php artisan db:seed --force
-    fi
+    php artisan db:seed --force
+
+    touch /var/www/.initialized
 else
     echo "Container already initialized, skipping setup..."
 fi
 
 echo "Clearing Laravel cache..."
 php artisan optimize:clear
-#php artisan migrate --seed
+
+echo "Starting PM2 queue workers..."
+pm2 start ecosystem.config.cjs --no-daemon &
 
 echo "Starting PHP-FPM..."
 exec php-fpm
